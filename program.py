@@ -4,16 +4,17 @@ Created on Thu Mar 12 12:26:14 2015
 
 @author: Thibault
 """
+# Currents imports
 import os
 import sys
 import hashlib
-reload(sys)  
+reload(sys)
 sys.setdefaultencoding('utf8')
 current_dir = os.getcwd()
 sys.path.append(current_dir + "\\lib")
 sys.path.append(current_dir + "\\src")
 
-# Import files
+# Import libs
 import urllib2 as urllib
 from ISHtmlParser import ISHTMLParser
 from PIL import Image
@@ -55,6 +56,12 @@ class Program():
 		# Counters
         self.nb_pages = 0
         self.nb_images = 0
+        self.img_to_remove = []
+    
+    def delete_imgs(self):
+        for path in self.img_to_remove:
+            print "Remove : " + str(path)
+            os.remove(path)
     
     def explore_img(self):
         print("")
@@ -72,16 +79,15 @@ class Program():
                     f.write(urllib.urlopen(url).read())
                     f.close()
                     
-                    print("Download : " + url)  
+                    print("Download : " + str(url))
                     # Ajout de l'image dans la bibliothèque
                     self.img_visited.append(self.md5(url))
-
+                    
                     # Vérification de l'image                
-                    if(self.verif_img(path_img)):
-                        self.nb_images += 1
-                    else:
-                        print("No download : " + url)
-                        os.remove(path_img) # On supprime l'image
+                    if not(self.verif_img(path_img)):
+                        self.img_to_remove.append(path_img) # Si il ne respecte pas ce que l'on veux, on l'ajoute a la liste a supprimer
+                    
+                    self.nb_images += 1
                     
             except urllib.HTTPError:
                 pass
@@ -89,6 +95,11 @@ class Program():
                 pass
             except ValueError:
                 pass
+        
+        print("")
+        print("Supression des images obsolètes")
+        
+        self.delete_imgs()
     
     def verif_img(self, path_img):
         try:
@@ -156,7 +167,8 @@ class Program():
             
     def md5(self, text):
         return hashlib.md5(text).hexdigest()
-    
+
+#### PROGRAM ####
 # Récupération des arguments consoles            
 argv = sys.argv
 register_path = argv[2] if len(argv) >= 3 else "images/"

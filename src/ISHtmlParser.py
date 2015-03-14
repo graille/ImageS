@@ -4,12 +4,14 @@ Created on Thu Mar 12 12:23:15 2015
 
 @author: Thibault
 """
+
+# Currents imports
 import os
 import sys
-
 current_dir = os.getcwd()
 sys.path.append(current_dir + "\\..\\lib")
 
+# Import HTMLParser
 from HTMLParser import HTMLParser
 
 class ISHTMLParser(HTMLParser):
@@ -20,12 +22,15 @@ class ISHTMLParser(HTMLParser):
         
         # Parsage de la page du site web
         url_temp = ""
-        if website_path[0:7] == "http://":
+        if website_path[0:7] == "http://": # Verification de l'entète pour savoir ou commencer la vérification
             depart = 7
+        elif website_path[0:7] == "ftp://":
+            depart = 6
         elif website_path[0:8] == "https://":
             depart = 8
         else:
             depart = 0
+        
         for i in range(depart, len(website_path) - 1):
             if website_path[i] == "/":
                 break
@@ -46,10 +51,10 @@ class ISHTMLParser(HTMLParser):
                 url = url[1:]
                 return self.URLParser(url)
         elif "http" not in url and "www" not in url \
-        and ".com" not in url and ".fr" not in url and ".net" not in url\
+        and ".com" not in url and ".fr" not in url and ".net" not in url \
         and ".eu" not in url: # Si c'est un lien relatif direct
             url = self.website_path + "/" + url 
-        elif url[0:3] == "www": # Si c'est un lien sans http
+        elif url[0:4] == "www.": # Si c'est un lien sans http
             url = "http://" + url
         
         return url
@@ -68,10 +73,10 @@ class ISHTMLParser(HTMLParser):
                     url = attr[1]
                     
                     if len(url) > 0 and url[0] != "#":
-                        url = attr[1]
-                        
                         # Enregistrement de l'URL
                         if url[-4:] in [".jpg", ".png", ".gif", ".bmp", ".svg"]: # Si c'est un lien vers une image
                             self.img_container.append(self.URLParser(url))
+                        elif url[-4:] in [".css"] or url[-3:] in [".js"]:
+                            pass
                         else:
                             self.url_container.append(self.URLParser(url))
