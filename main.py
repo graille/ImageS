@@ -4,12 +4,15 @@ Created on Thu Mar 12 12:26:14 2015
 
 @author: Thibault
 """
-# Currents imports
+
+# Import libs
 import os
 import sys
 import hashlib
+
 reload(sys)
 sys.setdefaultencoding('utf8')
+
 current_dir = os.getcwd()
 sys.path.append(current_dir + "\\lib")
 sys.path.append(current_dir + "\\src")

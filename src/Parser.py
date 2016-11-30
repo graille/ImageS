@@ -5,11 +5,9 @@ Created on Thu Mar 12 12:23:15 2015
 @author: Thibault
 """
 
-# Currents imports
+# Imports
 import os
 import sys
-current_dir = os.getcwd()
-sys.path.append(current_dir + "\\..\\lib")
 
 # Import HTMLParser
 from HTMLParser import HTMLParser
@@ -74,9 +72,9 @@ class ISHTMLParser(HTMLParser):
                     
                     if len(url) > 0 and url[0] != "#":
                         # Enregistrement de l'URL
-                        if url[-4:] in [".jpg", ".png", ".gif", ".bmp", ".svg"]: # Si c'est un lien vers une image
+                        if url[-4:].lower() in [".jpg", ".png", ".gif", ".bmp", ".svg", ".jpeg"]: # Si c'est un lien vers une image
                             self.img_container.append(self.URLParser(url))
-                        elif url[-4:] in [".css"] or url[-3:] in [".js"]:
+                        elif url[-4:].lower() in [".css"] or url[-3:].lower() in [".js"]: # If is a CSS or a Javascript element
                             pass
                         else:
                             self.url_container.append(self.URLParser(url))
